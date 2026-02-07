@@ -8,7 +8,6 @@ export interface ProbState {
   detectRange: number;    // nm (detection width)
   shipsPerDay: number;
   weatherMul: number;
-  running: boolean;
   animT: number;
 }
 
@@ -22,7 +21,6 @@ export function initProbability(): ProbState {
     detectRange: 40,
     shipsPerDay: 2,
     weatherMul: 1.0,
-    running: false,
     animT: 0,
   };
 

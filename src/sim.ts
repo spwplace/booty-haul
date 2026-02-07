@@ -343,7 +343,6 @@ const PIRATE_SPEED   = 0.04;
 // Map spans ~3200km. Accurate: 43/3200 = 0.0134.
 // We use 0.018 (slightly exaggerated for visibility).
 const BASE_DETECT_R  = 0.018;
-export const DETECT_R = BASE_DETECT_R;
 const TRAIL_INTERVAL  = 0.08;
 const TRAIL_MAX       = 180;
 

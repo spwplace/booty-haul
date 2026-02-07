@@ -7,7 +7,6 @@ export interface SweepState {
   shipSpeed: number;      // knots
   laneWidth: number;      // nm
   weatherMul: number;
-  running: boolean;
   // Animation state
   shipX: number;          // 0–1 fraction across lane
   sweptTrail: number[];   // x positions of trail samples
@@ -40,7 +39,6 @@ export function initSweep(): SweepState {
     shipSpeed: 5,
     laneWidth: 43,
     weatherMul: 1.0,
-    running: false,
     shipX: 0,
     sweptTrail: [],
     merchants: [],

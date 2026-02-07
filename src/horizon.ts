@@ -7,7 +7,6 @@ export interface HorizonState {
   obsHeight: number;     // feet
   tgtHeight: number;     // feet
   weatherMul: number;    // 0–1
-  running: boolean;
   animT: number;
 }
 
@@ -33,7 +32,6 @@ export function initHorizon(): HorizonState {
     obsHeight: 100,
     tgtHeight: 80,
     weatherMul: 1.0,
-    running: false,
     animT: 0,
   };
 

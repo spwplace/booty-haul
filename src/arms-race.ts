@@ -12,10 +12,6 @@ import {
 
 type MerchantDefense = 'convoy' | 'armed' | 'scatter' | 'avoidance' | 'naval' | 'storm';
 
-const ALL_DEFENSES: MerchantDefense[] = [
-  'convoy', 'armed', 'scatter', 'avoidance', 'naval', 'storm',
-];
-
 interface ARMerchant {
   id: number;
   route: number;
@@ -38,7 +34,7 @@ interface ARPirate {
   trailTimer: number;
   adaptedStrategy: string;
   fleeTimer: number;
-  captureRate: number;
+  avoidsConvoys: boolean;
 }
 
 interface NavyShip {
@@ -53,8 +49,6 @@ interface RunningStats {
   attempts: number;
   repelled: number;
   totalMerchants: number;
-  windowCaptures: number[];
-  windowTime: number;
 }
 
 interface DefenseConfig {
@@ -159,8 +153,13 @@ function computePhysicalParams(
   let pCapture = 1.0;
   let operationalFrac = 1.0;
 
-  if (cfg.active.has('storm'))
-    detectWidth *= 0.08;
+  if (cfg.active.has('storm')) {
+    // Storm timing: merchants sail during storms (~27% of weather cycle).
+    // Weighted detection: 27% at storm visibility + 73% clear (for those who leak through)
+    const stormFrac = STORM_DURATION / STORM_CYCLE; // ~0.27
+    const leakFrac = 0.15; // ~15% of merchants sail in clear weather anyway (sim behavior)
+    detectWidth *= stormFrac * 0.08 + (1 - stormFrac) * leakFrac;
+  }
 
   if (cfg.active.has('scatter'))
     laneWidth += 2 * cfg.scatterRadius;
@@ -213,8 +212,13 @@ function dailyDefenseCost(cfg: DefenseConfig, g: GlobalConfig): number {
   if (cfg.active.has('naval'))
     cost += cfg.patrolShips * 5;
 
-  if (cfg.active.has('storm'))
-    cost += 0.05 * g.cargoValue * g.shipsPerDay;
+  if (cfg.active.has('storm')) {
+    // Ship losses to weather + waiting cost for storm windows
+    const stormFrac = STORM_DURATION / STORM_CYCLE;
+    const waitDays = (1 - stormFrac) / stormFrac * 0.5; // avg wait for next storm window
+    cost += 0.05 * g.cargoValue * g.shipsPerDay; // 5% ship loss to weather
+    cost += waitDays * 0.02 * g.cargoValue * g.shipsPerDay; // waiting cost
+  }
 
   return cost;
 }
@@ -368,7 +372,7 @@ function createARSim(): ARSimState {
       pos, target: pos,
       trail: [], trailTimer: 0,
       adaptedStrategy: 'Random hunting',
-      fleeTimer: 0, captureRate: 0,
+      fleeTimer: 0, avoidsConvoys: false,
     },
     navyShips: [],
     time: 0,
@@ -376,7 +380,7 @@ function createARSim(): ARSimState {
     stormActive: false,
     stats: {
       captures: 0, attempts: 0, repelled: 0,
-      totalMerchants: 0, windowCaptures: [], windowTime: 0,
+      totalMerchants: 0,
     },
     nextId: 0,
     spawnAcc: 0,
@@ -451,6 +455,9 @@ function adaptPirate(sim: ARSimState, cfg: DefenseConfig): void {
   } else {
     sim.pirate.adaptedStrategy = strats[Math.floor(Math.random() * strats.length)];
   }
+
+  // Decide convoy avoidance once per adaptation cycle (not per frame)
+  sim.pirate.avoidsConvoys = cfg.active.has('convoy') && Math.random() < 0.7;
 
   // Behavioral adaptation: if passage is being avoided, relocate pirate
   if (cfg.active.has('avoidance') && cfg.avoidFraction > 60) {
@@ -561,8 +568,8 @@ function tickARSim(
       if (isOnLand(mp)) continue;
       // Armed avoidance
       if (cfg.active.has('armed') && m.armament > 0 && m.armament >= global.pirateStrength) continue;
-      // Convoy avoidance (target smaller groups)
-      if (cfg.active.has('convoy') && m.isConvoy && m.convoySize >= 4 && Math.random() < 0.7) continue;
+      // Convoy avoidance (decided per adaptation cycle, not per frame)
+      if (sim.pirate.avoidsConvoys && m.isConvoy && m.convoySize >= 4) continue;
       const d = dist(sim.pirate.pos, mp);
       if (d < closestD) { closestD = d; closest = m; }
     }
@@ -646,6 +653,7 @@ interface Preset {
   patrolShips: number;
   pirateStrength: number;
   shipsPerDay: number;
+  cargoValue: number;
   blurb: string;
 }
 
@@ -654,28 +662,28 @@ const PRESETS: Record<string, Preset> = {
     name: 'Golden Age Anarchy',
     defenses: [],
     convoySize: 3, armament: 2, scatterRadius: 20, avoidFraction: 50, patrolShips: 2,
-    pirateStrength: 4, shipsPerDay: 5,
+    pirateStrength: 4, shipsPerDay: 5, cargoValue: 80,
     blurb: 'The Golden Age (1680–1720): no organized defense, maximum piracy. Hundreds of pirates prowled the Caribbean unchecked. This is the baseline — what happens when trade is completely unprotected.',
   },
   treasure: {
     name: 'Spanish Treasure Fleet',
     defenses: ['convoy', 'naval', 'armed'],
     convoySize: 6, armament: 3, scatterRadius: 20, avoidFraction: 50, patrolShips: 3,
-    pirateStrength: 3, shipsPerDay: 3,
+    pirateStrength: 3, shipsPerDay: 3, cargoValue: 150,
     blurb: 'The Spanish Treasure Fleet system (1564–1790): massive convoys with armed escorts. Only 3 convoys were ever captured in over 200 years — but the system was enormously expensive. Ships waited months for convoy formation.',
   },
   privateer: {
     name: 'English Privateer Era',
     defenses: ['armed', 'scatter'],
     convoySize: 3, armament: 4, scatterRadius: 30, avoidFraction: 50, patrolShips: 2,
-    pirateStrength: 3, shipsPerDay: 4,
+    pirateStrength: 3, shipsPerDay: 4, cargoValue: 60,
     blurb: 'The English approach (1700–1730): arm the merchants themselves. Letter-of-marque ships carried enough guns to fight back. Combined with unpredictable routing, this made piracy risky but not impossible.',
   },
   crackdown: {
     name: 'Royal Navy Crackdown',
     defenses: ['naval', 'storm'],
     convoySize: 3, armament: 2, scatterRadius: 20, avoidFraction: 50, patrolShips: 5,
-    pirateStrength: 2, shipsPerDay: 4,
+    pirateStrength: 2, shipsPerDay: 4, cargoValue: 80,
     blurb: 'The Royal Navy crackdown (1720–1730): state power ended the Golden Age. Five warships patrolling the passage, combined with storm-timed transits, reduced piracy to near zero — but at enormous public expense.',
   },
 };
@@ -863,6 +871,7 @@ function wireControls(state: ArmsRaceState): void {
       defense.patrolShips = preset.patrolShips;
       g.pirateStrength = preset.pirateStrength;
       g.shipsPerDay = preset.shipsPerDay;
+      g.cargoValue = preset.cargoValue;
 
       // Update slider values in DOM
       setSlider('ar-convoy-size', preset.convoySize, String(preset.convoySize));
@@ -871,6 +880,7 @@ function wireControls(state: ArmsRaceState): void {
       setSlider('ar-avoid-frac', preset.avoidFraction, preset.avoidFraction + '%');
       setSlider('ar-patrol-ships', preset.patrolShips, String(preset.patrolShips));
       setSlider('ar-ships-day', preset.shipsPerDay, String(preset.shipsPerDay));
+      setSlider('ar-cargo', preset.cargoValue, preset.cargoValue + 'k');
       setSlider('ar-pirate-str', preset.pirateStrength, String(preset.pirateStrength));
 
       updateSliderVisibility(defense);
@@ -933,7 +943,8 @@ export function drawArmsRace(state: ArmsRaceState, dt: number): void {
   drawMap(state);
   drawCostChart(state);
   drawPopChart(state);
-  updateStats(state);
+  // Throttle DOM updates (stats every ~1s, callout every ~2s)
+  if (++statsTimer % 60 === 0) updateStats(state);
   updateCallout(state);
 }
 
@@ -1525,6 +1536,7 @@ function updateStats(state: ArmsRaceState): void {
 
 // ── Callout Update ───────────────────────────────────────
 
+let statsTimer = 0;
 let calloutTimer = 0;
 
 function updateCallout(state: ArmsRaceState): void {
