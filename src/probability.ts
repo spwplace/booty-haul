@@ -36,20 +36,24 @@ export function initProbability(): ProbState {
   laneSlider.addEventListener('input', () => {
     state.laneWidth = +laneSlider.value;
     laneVal.textContent = laneSlider.value + ' nm';
+    state.animT = 0;
     updateProbStats(state);
   });
   detectSlider.addEventListener('input', () => {
     state.detectRange = +detectSlider.value;
     detectVal.textContent = detectSlider.value + ' nm';
+    state.animT = 0;
     updateProbStats(state);
   });
   shipsSlider.addEventListener('input', () => {
     state.shipsPerDay = +shipsSlider.value;
     shipsVal.textContent = shipsSlider.value;
+    state.animT = 0;
     updateProbStats(state);
   });
   weatherSel.addEventListener('change', () => {
     state.weatherMul = +weatherSel.value;
+    state.animT = 0;
     updateProbStats(state);
   });
 
@@ -150,7 +154,7 @@ export function drawProbability(s: ProbState, dt: number) {
 
   // Determine x-axis range (days)
   const days99 = daysToProb(pDailyVal, 0.99);
-  const maxDays = Math.min(Math.max(days99 * 1.3, 10), 120);
+  const maxDays = Math.min(Math.max(days99 * 1.3, 7), 120);
 
   // Grid lines
   ctx.strokeStyle = 'rgba(255,255,255,0.04)';
@@ -213,7 +217,7 @@ export function drawProbability(s: ProbState, dt: number) {
   // ── Draw probability curve ──
 
   // Animate: curve draws progressively
-  const animDays = Math.min(maxDays, s.animT * maxDays * 0.5);
+  const animDays = Math.min(maxDays, s.animT * maxDays * 0.35);
 
   ctx.beginPath();
   let first = true;
