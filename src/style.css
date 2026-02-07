@@ -53,6 +53,44 @@ header::before {
   pointer-events: none;
 }
 
+/* Starfield — scattered dim dots above title */
+header h1::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: -100px;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  pointer-events: none;
+  box-shadow:
+    142px 18px 1px 0.5px rgba(255,255,255,0.45),
+    280px 8px 0 0 rgba(255,255,255,0.25),
+    410px 35px 1px 0.5px rgba(255,255,255,0.50),
+    560px 12px 0 0 rgba(255,255,255,0.22),
+    690px 30px 1px 0.5px rgba(255,255,255,0.40),
+    820px 22px 0 0 rgba(255,255,255,0.28),
+    950px 8px 1px 0.5px rgba(255,255,255,0.45),
+    210px 50px 0 0 rgba(255,255,255,0.20),
+    370px 65px 1px 0.5px rgba(255,255,255,0.35),
+    500px 55px 0 0 rgba(255,255,255,0.22),
+    630px 72px 1px 0.5px rgba(255,255,255,0.38),
+    760px 60px 0 0 rgba(255,255,255,0.20),
+    890px 48px 0 0 rgba(255,255,255,0.28),
+    175px 88px 1px 0.5px rgba(255,255,255,0.35),
+    450px 95px 0 0 rgba(255,255,255,0.22),
+    600px 105px 0 0 rgba(255,255,255,0.18),
+    780px 85px 1px 0.5px rgba(255,255,255,0.40),
+    920px 100px 0 0 rgba(255,255,255,0.20);
+  animation: starTwinkle 8s ease-in-out infinite alternate;
+}
+
+@keyframes starTwinkle {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
 h1 {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: clamp(1.8rem, 4.5vw, 2.6rem);

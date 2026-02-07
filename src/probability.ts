@@ -319,5 +319,5 @@ export function drawProbability(s: ProbState, dt: number) {
   ctx.fillStyle = 'rgba(255,215,0,0.3)';
   ctx.font = '600 10px system-ui';
   ctx.textAlign = 'left';
-  ctx.fillText('P(AT LEAST ONE ENCOUNTER) VS. DAYS', margin.left, margin.top - 12);
+  ctx.fillText('HOW QUICKLY CERTAINTY ARRIVES', margin.left, margin.top - 12);
 }

@@ -780,6 +780,10 @@ export function initArmsRace(): ArmsRaceState {
 
   wireControls(state);
 
+  // Default to Treasure Fleet preset so readers see active defenses on arrival
+  const defaultPresetBtn = document.querySelector<HTMLButtonElement>('.ar-preset-btn[data-preset="treasure"]');
+  if (defaultPresetBtn) defaultPresetBtn.click();
+
   return state;
 }
 
