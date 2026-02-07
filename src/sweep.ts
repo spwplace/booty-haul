@@ -24,7 +24,9 @@ interface SweepMerchant {
   flashAge: number;
 }
 
-const BASE_DETECT_WIDTH_NM = 40; // ~20nm each side from crow's nest (clear weather)
+// Detection width = 2 × range, from Section I's formula at default heights
+// d = 1.17 × (√h_obs + √h_tgt); width = 2d
+const BASE_DETECT_WIDTH_NM = 2 * 1.17 * (Math.sqrt(100) + Math.sqrt(80)); // ≈ 44 nm
 
 function effectiveDetectWidth(weatherMul: number): number {
   return BASE_DETECT_WIDTH_NM * weatherMul;

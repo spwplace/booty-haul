@@ -147,7 +147,8 @@ function computePhysicalParams(
   cfg: DefenseConfig,
   g: GlobalConfig,
 ): PhysicalParams {
-  let detectWidth = 40;
+  // Detection width = 2 × range; d = 1.17 × (√h_obs + √h_tgt) at h=100ft, h_tgt=80ft
+  let detectWidth = 2 * 1.17 * (Math.sqrt(100) + Math.sqrt(80));
   let laneWidth = 43;
   let targetsPerDay = g.shipsPerDay;
   let pCapture = 1.0;
@@ -181,11 +182,11 @@ function computePhysicalParams(
   return { detectWidth, laneWidth, targetsPerDay, pCapture, operationalFrac };
 }
 
-/** Expected piracy loss in k doubloons/day — Section 4's pDaily extended */
+/** Expected piracy loss in k doubloons/day — E[captures] × cargoValue */
 function expectedDailyPiracyLoss(p: PhysicalParams, cargoValue: number): number {
   const pSingle = Math.min(1, p.detectWidth / p.laneWidth);
-  const pEncounter = 1 - Math.pow(1 - pSingle, p.targetsPerDay);
-  return pEncounter * p.pCapture * p.operationalFrac * cargoValue;
+  const expectedCaptures = p.targetsPerDay * pSingle * p.pCapture * p.operationalFrac;
+  return expectedCaptures * cargoValue;
 }
 
 /** Defense cost in k doubloons/day — concrete economic penalties */
@@ -696,10 +697,9 @@ function generateCallout(cfg: DefenseConfig, g: GlobalConfig, eq: Equilibrium): 
   const ppNoDef = computePhysicalParams(noDefCfg, g);
   const noDefLoss = expectedDailyPiracyLoss(ppNoDef, g.cargoValue);
   const pSingleNoDef = Math.min(1, ppNoDef.detectWidth / ppNoDef.laneWidth);
-  const pDailyNoDef = 1 - Math.pow(1 - pSingleNoDef, ppNoDef.targetsPerDay);
 
   if (cfg.active.size === 0) {
-    return `Without defense: ${(pDailyNoDef * 100).toFixed(0)}% daily encounter probability, ${noDefLoss.toFixed(1)}k doubloons lost per day. This is the baseline \u2014 the price of unprotected trade.`;
+    return `Without defense: ${(pSingleNoDef * 100).toFixed(0)}% detection per ship, ${noDefLoss.toFixed(1)}k doubloons lost per day. This is the baseline \u2014 the price of unprotected trade.`;
   }
 
   if (cfg.active.has('convoy') && cfg.active.size === 1) {
@@ -1516,8 +1516,8 @@ function updateStats(state: ArmsRaceState): void {
   // Current params (user's actual slider values)
   const pp = computePhysicalParams(defense, g);
   const pSingle = Math.min(1, pp.detectWidth / pp.laneWidth);
-  const pDaily = 1 - Math.pow(1 - pSingle, pp.targetsPerDay);
   const captureRate = pp.pCapture * pp.operationalFrac;
+  const expectedCap = pp.targetsPerDay * pSingle * captureRate;
   const piracyLoss = expectedDailyPiracyLoss(pp, g.cargoValue);
   const defCost = dailyDefenseCost(defense, g);
   const totalCost = piracyLoss + defCost;
@@ -1528,13 +1528,19 @@ function updateStats(state: ArmsRaceState): void {
   const noDefLoss = expectedDailyPiracyLoss(ppNoDef, g.cargoValue);
   const savings = noDefLoss - totalCost;
 
+  // Simulated capture rate: captures per sim-day (60 sim-seconds = 1 day)
+  const simDays = state.sim.time / 60;
+  const simCapPerDay = simDays > 0.5 ? state.sim.stats.captures / simDays : 0;
+
   el.innerHTML = `
-    <div class="stat"><span class="stat-label">Encounter rate:</span> <span class="stat-value">${(pDaily * 100).toFixed(0)}%/day</span></div>
+    <div class="stat"><span class="stat-label">Encounter rate:</span> <span class="stat-value">${(pSingle * 100).toFixed(0)}%/ship</span></div>
     <div class="stat"><span class="stat-label">Capture rate:</span> <span class="stat-value">${(captureRate * 100).toFixed(0)}%/enc</span></div>
     <div class="stat"><span class="stat-label">Piracy loss:</span> <span class="stat-value">${piracyLoss.toFixed(1)}k/day</span></div>
     <div class="stat"><span class="stat-label">Defense cost:</span> <span class="stat-value">${defCost.toFixed(1)}k/day</span></div>
     <div class="stat"><span class="stat-label">Total cost:</span> <span class="stat-value">${totalCost.toFixed(1)}k/day</span></div>
     <div class="stat"><span class="stat-label">Savings:</span> <span class="stat-value">${savings.toFixed(1)}k/day vs none</span></div>
+    <div class="stat"><span class="stat-label">Analytical:</span> <span class="stat-value">${expectedCap.toFixed(2)} cap/day</span></div>
+    <div class="stat"><span class="stat-label">Simulated:</span> <span class="stat-value">${simCapPerDay.toFixed(2)} cap/day</span></div>
   `;
 }
 

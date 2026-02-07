@@ -30,6 +30,7 @@ export interface PirateState {
   watchPort: number;
   portTimer: number;
   intelTarget: number | null;
+  intelTimer: number;
   // chokepoint patrol state
   chokeLeg: 0 | 1;
 }
@@ -412,6 +413,7 @@ function makePirate(): PirateState {
     watchPort: weightedRandomPort(),
     portTimer: 0,
     intelTarget: null,
+    intelTimer: 0,
     chokeLeg: 0,
   };
 }
@@ -491,27 +493,44 @@ function steer(pirate: PirateState, strategy: Strategy, inst: SimInstance, dt: n
     }
 
     case 'intel': {
+      // Re-evaluate target every 3 seconds or when current target is gone
+      pirate.intelTimer += dt;
       if (pirate.intelTarget !== null) {
         const m = inst.merchants.find(v => v.id === pirate.intelTarget);
-        if (m) {
-          const predictT = clamp(m.t + m.speed * 4, 0, 1);
-          pirate.target = routePos(ROUTES[m.route], predictT);
-        } else {
+        if (!m || m.t > 0.85 || pirate.intelTimer > 3) {
           pirate.intelTarget = null;
         }
       }
       if (pirate.intelTarget === null && inst.merchants.length > 0) {
+        pirate.intelTimer = 0;
+        // Find best intercept: closest point on each merchant's remaining route
         let bestD = Infinity;
         let bestId: number | null = null;
         for (const m of inst.merchants) {
-          const mp = routePos(ROUTES[m.route], m.t);
-          const d = dist(pirate.pos, mp);
-          if (d < bestD) { bestD = d; bestId = m.id; }
+          if (m.t > 0.75) continue;
+          // Sample points along remaining route, find closest to pirate
+          let minD = Infinity;
+          for (let s = m.t; s <= 1; s += 0.05) {
+            const p = routePos(ROUTES[m.route], s);
+            const d = dist(pirate.pos, p);
+            if (d < minD) minD = d;
+          }
+          if (minD < bestD) { bestD = minD; bestId = m.id; }
         }
         pirate.intelTarget = bestId;
       }
-      if (pirate.intelTarget === null) {
-        // Patrol near passage when no merchants
+      if (pirate.intelTarget !== null) {
+        const m = inst.merchants.find(v => v.id === pirate.intelTarget)!;
+        // Head to closest point on merchant's remaining route (cut-off intercept)
+        let bestT = m.t;
+        let bestD = Infinity;
+        for (let s = m.t; s <= 1; s += 0.03) {
+          const p = routePos(ROUTES[m.route], s);
+          const d = dist(pirate.pos, p);
+          if (d < bestD) { bestD = d; bestT = s; }
+        }
+        pirate.target = routePos(ROUTES[m.route], bestT);
+      } else {
         pirate.target = { x: STRAIT.x, y: STRAIT.y };
       }
       break;
