@@ -283,6 +283,34 @@ export function drawProbability(s: ProbState, dt: number) {
     ctx.fillText(`${ms.label} @ day ${d}`, x, y - 10);
   }
 
+  // ── Animated day indicator ──
+  if (animDays >= 1 && animDays < maxDays * 0.95) {
+    const curDay = Math.floor(animDays);
+    const curP = pByDay(pDailyVal, curDay);
+    const dotX = margin.left + (curDay / maxDays) * cw;
+    const dotY = margin.top + ch * (1 - curP);
+
+    // Glow
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,216,102,0.15)';
+    ctx.fill();
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffd866';
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = 'rgba(255,216,102,0.8)';
+    ctx.font = 'bold 10px system-ui';
+    const label = `Day ${curDay} — ${(curP * 100).toFixed(0)}%`;
+    const nearRight = dotX > margin.left + cw * 0.65;
+    ctx.textAlign = nearRight ? 'right' : 'left';
+    ctx.fillText(label, dotX + (nearRight ? -10 : 10), dotY - 10);
+  }
+
   // Title
   ctx.fillStyle = 'rgba(255,215,0,0.3)';
   ctx.font = '600 10px system-ui';

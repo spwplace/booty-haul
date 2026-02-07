@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>How Did Pirates Find Anyone?</title>
+  <meta name="description" content="An interactive essay exploring why piracy worked — through perception physics, geography, probability, and game theory.">
+  <meta name="theme-color" content="#060a12">
+  <meta property="og:title" content="How Did Pirates Find Anyone?">
+  <meta property="og:description" content="The ocean is vast. An interactive exploration of the geometry, probability, and game theory that made piracy inevitable — and ultimately ended it.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="How Did Pirates Find Anyone?">
+  <meta name="twitter:description" content="An interactive essay on the math of piracy: perception, chokepoints, probability, and the arms race that ended the Golden Age.">
 </head>
 <body>
   <div id="app">
@@ -16,7 +24,7 @@
     <section id="horizon" class="essay-section">
       <div class="section-text">
         <h2><span class="section-num">I</span> How Far Can You See?</h2>
-        <p>The first surprise is <strong>how far a lookout can actually see</strong>. The ocean feels infinite, but from a crow's nest 100 feet up, the horizon is nearly 12 nautical miles away. And you're not looking for the horizon — you're looking for <em>masts</em>. A tall ship's rigging rises 80+ feet above the waterline. Combine both heights and a single lookout can spot a target over <strong>23 nautical miles</strong> away.</p>
+        <p>The first surprise is <strong>how far a lookout can actually see</strong>. From a crow's nest 100 feet above the waterline, the geometric horizon is nearly 12 nautical miles away. But a pirate's lookout wasn't scanning for the horizon. He was scanning for <em>masts</em> — and a merchant ship's rigging rises 80 feet or more above the water, visible long before the hull clears the curvature of the Earth. Combine both heights with the formula navigators have used for centuries, and one pair of eyes can detect a ship over <strong>23 nautical miles</strong> away.</p>
         <p class="callout" id="horizon-callout">From a crow's nest, you're watching 1,660 square nautical miles of ocean. That's larger than Rhode Island.</p>
       </div>
       <div class="section-interactive">
@@ -50,8 +58,8 @@
     <section id="sweep" class="essay-section">
       <div class="section-text">
         <h2><span class="section-num">II</span> The Ribbon</h2>
-        <p>Now set that lookout in motion. A pirate ship sailing at 5 knots covers <strong>120 nautical miles per day</strong>. The detection circle sweeps forward, painting a ribbon of surveilled ocean 40 miles wide and 120 miles long — nearly <strong>4,800 square nautical miles every day</strong>.</p>
-        <p>But the real insight is what happens when the lane is <em>narrow</em>. Trade routes aren't spread evenly across the ocean. They compress into straits, passages, and coastal channels.</p>
+        <p>Now set that lookout in motion. A pirate ship under sail at 5 knots covers <strong>120 nautical miles per day</strong>. The detection circle drags forward, sweeping a ribbon of ocean 40 miles wide and 120 long — nearly <strong>4,800 square nautical miles</strong> of surveilled sea every day.</p>
+        <p>But the critical insight isn't the area — it's the <em>ratio</em>. Trade routes don't spread evenly across the ocean. They compress into straits, passages, and coastal channels, wherever geography, wind, and current force ships through the same water.</p>
         <p class="callout" id="sweep-callout">The Windward Passage is 43 nautical miles wide. A pirate's lookout can see 40 miles across. One ship nearly covers the entire strait.</p>
       </div>
       <div class="section-interactive">
@@ -88,8 +96,8 @@
     <section id="sim" class="essay-section">
       <div class="section-text">
         <h2><span class="section-num">III</span> The Funnel</h2>
-        <p>Geography doesn't just compress lanes — it creates <strong>killzones</strong>. The Caribbean narrows, the Strait of Malacca, the Horn of Africa: these natural funnels force merchant traffic through predictable corridors. A pirate who understood this didn't search the ocean. They <em>waited</em>.</p>
-        <p>Watch five strategies compete. The answer isn't luck — it's geography.</p>
+        <p>Geography doesn't just compress lanes — it creates <strong>funnels</strong>. The Windward Passage between Cuba and Hispaniola, the Strait of Malacca, the mouth of the Red Sea: every era's piracy hotspot sits at a chokepoint where trade is forced through predictable corridors. Bartholomew Roberts, the most successful pirate of the Golden Age, didn't roam the Atlantic at random. He positioned himself where the shipping lanes converged — and took over 400 vessels in three years.</p>
+        <p>Watch five strategies compete. The answer was never luck — it was always geography.</p>
       </div>
       <div class="section-interactive">
         <canvas id="sea"></canvas>
@@ -122,8 +130,8 @@
     <section id="probability" class="essay-section">
       <div class="section-text">
         <h2><span class="section-num">IV</span> The Math</h2>
-        <p>Put it all together and the numbers become inevitable. With known detection ranges, lane widths, and traffic rates, you can calculate the <strong>exact probability</strong> of a pirate encountering a target on any given day.</p>
-        <p>The curve below shows how probability accumulates. Adjust the parameters and watch the math guarantee encounters.</p>
+        <p>Now put it all together. Given a detection width, a lane width, and a daily traffic rate, the probability of encounter is not guesswork — it is <strong>arithmetic</strong>. Each day is an independent trial. But the cumulative probability — the chance of <em>at least one</em> encounter — ratchets toward certainty faster than intuition expects.</p>
+        <p>At a 43-mile chokepoint with two ships per day, the question is never <em>whether</em>. It is <strong>how many days</strong>.</p>
         <p class="callout" id="prob-callout">At the Windward Passage with 2 ships per day, a pirate has a 99% chance of encountering a target within 3 days. The ocean is big — but the lanes are narrow.</p>
       </div>
       <div class="section-interactive">
@@ -162,8 +170,8 @@
     <section id="arms-race" class="essay-section">
       <div class="section-text">
         <h2><span class="section-num">V</span> The Arms Race</h2>
-        <p>Sections I–IV prove piracy <em>works</em>. But if it works so well, <strong>why didn't it destroy all trade?</strong> Because merchants adapted — and pirates adapted back. The result is a repeated asymmetric game with a Nash equilibrium: <strong>perfect safety costs more than accepting some losses.</strong></p>
-        <p>Toggle defenses below and watch the arms race play out. The pirate adapts its strategy in real time. The optimal defense level minimizes <em>total</em> cost — piracy losses plus defense spending plus voyage delays.</p>
+        <p>Sections I–IV prove piracy <em>works</em>. The geometry guarantees it. So <strong>why didn't piracy destroy all maritime trade?</strong> Because merchants and empires fought back — and the defenses they invented map directly onto the parameters above. Spain's <em>Flota de Indias</em> gathered ships into armed convoys starting in the 1560s, reducing targets per day but adding costly waiting time. Merchants armed their vessels, sacrificing cargo space for cannon. Some captains abandoned the chokepoints entirely, sailing longer routes through open water. And when England dispatched Woodes Rogers to Nassau in 1718 with Royal Navy warships and pardons for surrendering pirates, it marked the beginning of the end.</p>
+        <p>The result is a Nash equilibrium: <strong>perfect safety costs more than the piracy it prevents.</strong> Toggle defenses below and watch the economics play out.</p>
       </div>
       <div class="section-interactive">
         <canvas id="ar-map"></canvas>
@@ -242,7 +250,7 @@
     </section>
 
     <footer>
-      <p>The ocean is vast — but trade is predictable, lookouts see far, and geography is a funnel. Pirates didn't find ships by luck. They found them by <em>math</em>.</p>
+      <p>The ocean is vast — but trade is predictable, lookouts see far, and geography is a funnel. Pirates didn't find ships by luck. They found them by <em>math</em> — and the same math that guaranteed encounters eventually priced piracy out of business.</p>
       <p class="footer-note">Detection formula: d = 1.17 × (√h<sub>observer</sub> + √h<sub>target</sub>) nautical miles. Historical data from maritime records of the Golden Age of Piracy (1680–1730).</p>
     </footer>
   </div>
