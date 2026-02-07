@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Did Pirates Find Anyone?</title>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>The Ocean Is Vast. <em>So How Did Pirates Find Anyone?</em></h1>
+      <p class="subtitle">An interactive exploration of perception, geometry, strategy, and probability.</p>
+    </header>
+
+    <!-- Section 1: Perception -->
+    <section id="horizon" class="essay-section">
+      <div class="section-text">
+        <h2><span class="section-num">I</span> How Far Can You See?</h2>
+        <p>The first surprise is <strong>how far a lookout can actually see</strong>. The ocean feels infinite, but from a crow's nest 100 feet up, the horizon is nearly 12 nautical miles away. And you're not looking for the horizon — you're looking for <em>masts</em>. A tall ship's rigging rises 80+ feet above the waterline. Combine both heights and a single lookout can spot a target over <strong>23 nautical miles</strong> away.</p>
+        <p class="callout" id="horizon-callout">From a crow's nest, you're watching 1,660 square nautical miles of ocean. That's larger than Rhode Island.</p>
+      </div>
+      <div class="section-interactive">
+        <canvas id="horizon-canvas"></canvas>
+        <div class="controls-row" id="horizon-controls">
+          <label>
+            <span class="control-label">Observer height</span>
+            <input type="range" id="obs-height" min="10" max="130" value="100" step="1">
+            <span class="control-value" id="obs-height-val">100 ft</span>
+          </label>
+          <label>
+            <span class="control-label">Target height</span>
+            <input type="range" id="tgt-height" min="10" max="120" value="80" step="1">
+            <span class="control-value" id="tgt-height-val">80 ft</span>
+          </label>
+          <label>
+            <span class="control-label">Weather</span>
+            <select id="weather-horizon">
+              <option value="1.0">Clear</option>
+              <option value="0.7">Hazy</option>
+              <option value="0.4">Foggy</option>
+              <option value="0.08">Storm</option>
+            </select>
+          </label>
+        </div>
+        <div class="stats-row" id="horizon-stats"></div>
+      </div>
+    </section>
+
+    <!-- Section 2: The Ribbon -->
+    <section id="sweep" class="essay-section">
+      <div class="section-text">
+        <h2><span class="section-num">II</span> The Ribbon</h2>
+        <p>Now set that lookout in motion. A pirate ship sailing at 5 knots covers <strong>120 nautical miles per day</strong>. The detection circle sweeps forward, painting a ribbon of surveilled ocean 40 miles wide and 120 miles long — nearly <strong>4,800 square nautical miles every day</strong>.</p>
+        <p>But the real insight is what happens when the lane is <em>narrow</em>. Trade routes aren't spread evenly across the ocean. They compress into straits, passages, and coastal channels.</p>
+        <p class="callout" id="sweep-callout">The Windward Passage is 43 nautical miles wide. A pirate's lookout can see 40 miles across. One ship nearly covers the entire strait.</p>
+      </div>
+      <div class="section-interactive">
+        <canvas id="sweep-canvas"></canvas>
+        <div class="controls-row" id="sweep-controls">
+          <label>
+            <span class="control-label">Ship speed</span>
+            <input type="range" id="ship-speed" min="2" max="10" value="5" step="0.5">
+            <span class="control-value" id="ship-speed-val">5 kn</span>
+          </label>
+          <label>
+            <span class="control-label">Lane</span>
+            <select id="lane-width">
+              <option value="200">Open Ocean — 200 nm</option>
+              <option value="43" selected>Windward Passage — 43 nm</option>
+              <option value="30">Strait of Malacca — 30 nm</option>
+            </select>
+          </label>
+          <label>
+            <span class="control-label">Weather</span>
+            <select id="weather-sweep">
+              <option value="1.0">Clear</option>
+              <option value="0.7">Hazy</option>
+              <option value="0.4">Foggy</option>
+              <option value="0.08">Storm</option>
+            </select>
+          </label>
+        </div>
+        <div class="stats-row" id="sweep-stats"></div>
+      </div>
+    </section>
+
+    <!-- Section 3: The Funnel -->
+    <section id="sim" class="essay-section">
+      <div class="section-text">
+        <h2><span class="section-num">III</span> The Funnel</h2>
+        <p>Geography doesn't just compress lanes — it creates <strong>killzones</strong>. The Caribbean narrows, the Strait of Malacca, the Horn of Africa: these natural funnels force merchant traffic through predictable corridors. A pirate who understood this didn't search the ocean. They <em>waited</em>.</p>
+        <p>Watch five strategies compete. The answer isn't luck — it's geography.</p>
+      </div>
+      <div class="section-interactive">
+        <canvas id="sea"></canvas>
+        <div id="sim-ui">
+          <div id="strategies"></div>
+          <p id="desc"></p>
+          <div id="sim-controls">
+            <button id="reset">Reset</button>
+            <label>Speed <input type="range" id="speed" min="1" max="10" value="3" step="1"></label>
+            <span id="clock">0:00</span>
+            <label>Weather
+              <select id="weather-sim">
+                <option value="1.0">Clear</option>
+                <option value="0.7">Hazy</option>
+                <option value="0.4">Foggy</option>
+                <option value="0.08">Storm</option>
+              </select>
+            </label>
+            <span id="sim-encounters">Encounters: 0</span>
+          </div>
+          <div id="comparison">
+            <h3>Captures per Minute — All Strategies Running Simultaneously</h3>
+            <div id="bars"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: The Math -->
+    <section id="probability" class="essay-section">
+      <div class="section-text">
+        <h2><span class="section-num">IV</span> The Math</h2>
+        <p>Put it all together and the numbers become inevitable. With known detection ranges, lane widths, and traffic rates, you can calculate the <strong>exact probability</strong> of a pirate encountering a target on any given day.</p>
+        <p>The curve below shows how probability accumulates. Adjust the parameters and watch the math guarantee encounters.</p>
+        <p class="callout" id="prob-callout">At the Windward Passage with 2 ships per day, a pirate has a 99% chance of encountering a target within 3 days. The ocean is big — but the lanes are narrow.</p>
+      </div>
+      <div class="section-interactive">
+        <canvas id="prob-canvas"></canvas>
+        <div class="controls-row" id="prob-controls">
+          <label>
+            <span class="control-label">Lane width</span>
+            <input type="range" id="prob-lane" min="10" max="200" value="43" step="1">
+            <span class="control-value" id="prob-lane-val">43 nm</span>
+          </label>
+          <label>
+            <span class="control-label">Detection range</span>
+            <input type="range" id="prob-detect" min="5" max="50" value="40" step="1">
+            <span class="control-value" id="prob-detect-val">40 nm</span>
+          </label>
+          <label>
+            <span class="control-label">Ships per day</span>
+            <input type="range" id="prob-ships" min="1" max="8" value="2" step="1">
+            <span class="control-value" id="prob-ships-val">2</span>
+          </label>
+          <label>
+            <span class="control-label">Weather</span>
+            <select id="weather-prob">
+              <option value="1.0">Clear</option>
+              <option value="0.7">Hazy</option>
+              <option value="0.4">Foggy</option>
+              <option value="0.08">Storm</option>
+            </select>
+          </label>
+        </div>
+        <div class="stats-row" id="prob-stats"></div>
+      </div>
+    </section>
+
+    <!-- Section 5: The Arms Race -->
+    <section id="arms-race" class="essay-section">
+      <div class="section-text">
+        <h2><span class="section-num">V</span> The Arms Race</h2>
+        <p>Sections I–IV prove piracy <em>works</em>. But if it works so well, <strong>why didn't it destroy all trade?</strong> Because merchants adapted — and pirates adapted back. The result is a repeated asymmetric game with a Nash equilibrium: <strong>perfect safety costs more than accepting some losses.</strong></p>
+        <p>Toggle defenses below and watch the arms race play out. The pirate adapts its strategy in real time. The optimal defense level minimizes <em>total</em> cost — piracy losses plus defense spending plus voyage delays.</p>
+      </div>
+      <div class="section-interactive">
+        <canvas id="ar-map"></canvas>
+
+        <div class="ar-callout" id="ar-callout">Without defense, pirates capture a significant fraction of all traffic. This is the baseline — the price of unprotected trade.</div>
+
+        <div id="ar-strategies">
+          <button class="strat-btn ar-strat-btn" data-ar-strat="convoy"><span class="strat-dot" style="background:#3498db"></span>Convoy</button>
+          <button class="strat-btn ar-strat-btn" data-ar-strat="armed"><span class="strat-dot" style="background:#e67e22"></span>Armed Ships</button>
+          <button class="strat-btn ar-strat-btn" data-ar-strat="scatter"><span class="strat-dot" style="background:#9b59b6"></span>Route Scatter</button>
+          <button class="strat-btn ar-strat-btn" data-ar-strat="avoidance"><span class="strat-dot" style="background:#1abc9c"></span>Passage Avoidance</button>
+          <button class="strat-btn ar-strat-btn" data-ar-strat="naval"><span class="strat-dot" style="background:#2980b9"></span>Naval Patrol</button>
+          <button class="strat-btn ar-strat-btn" data-ar-strat="storm"><span class="strat-dot" style="background:#7f8c8d"></span>Storm Timing</button>
+        </div>
+
+        <div id="ar-sliders">
+          <div class="ar-slider-group" data-for="convoy">
+            <label><span class="control-label">Convoy size</span>
+              <input type="range" id="ar-convoy-size" min="2" max="6" value="3" step="1">
+              <span class="control-value" id="ar-convoy-size-val">3</span>
+            </label>
+          </div>
+          <div class="ar-slider-group" data-for="armed">
+            <label><span class="control-label">Armament level</span>
+              <input type="range" id="ar-armed-level" min="1" max="5" value="2" step="1">
+              <span class="control-value" id="ar-armed-level-val">2</span>
+            </label>
+          </div>
+          <div class="ar-slider-group" data-for="scatter">
+            <label><span class="control-label">Scatter radius</span>
+              <input type="range" id="ar-scatter-radius" min="0" max="50" value="20" step="1">
+              <span class="control-value" id="ar-scatter-radius-val">20 nm</span>
+            </label>
+          </div>
+          <div class="ar-slider-group" data-for="avoidance">
+            <label><span class="control-label">Avoidance fraction</span>
+              <input type="range" id="ar-avoid-frac" min="0" max="100" value="50" step="5">
+              <span class="control-value" id="ar-avoid-frac-val">50%</span>
+            </label>
+          </div>
+          <div class="ar-slider-group" data-for="naval">
+            <label><span class="control-label">Patrol ships</span>
+              <input type="range" id="ar-patrol-ships" min="0" max="5" value="2" step="1">
+              <span class="control-value" id="ar-patrol-ships-val">2</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="ar-global-controls" class="controls-row">
+          <label><span class="control-label">Ships/day</span>
+            <input type="range" id="ar-ships-day" min="1" max="8" value="3" step="1">
+            <span class="control-value" id="ar-ships-day-val">3</span>
+          </label>
+          <label><span class="control-label">Cargo value</span>
+            <input type="range" id="ar-cargo" min="10" max="200" value="80" step="10">
+            <span class="control-value" id="ar-cargo-val">80k</span>
+          </label>
+          <label><span class="control-label">Pirate strength</span>
+            <input type="range" id="ar-pirate-str" min="1" max="5" value="2" step="1">
+            <span class="control-value" id="ar-pirate-str-val">2</span>
+          </label>
+        </div>
+
+        <div id="ar-presets">
+          <button class="ar-preset-btn" data-preset="anarchy">Golden Age</button>
+          <button class="ar-preset-btn" data-preset="treasure">Treasure Fleet</button>
+          <button class="ar-preset-btn" data-preset="privateer">Privateer Era</button>
+          <button class="ar-preset-btn" data-preset="crackdown">Navy Crackdown</button>
+        </div>
+
+        <canvas id="ar-cost-chart"></canvas>
+        <canvas id="ar-pop-chart"></canvas>
+
+        <div id="ar-stats" class="stats-row"></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>The ocean is vast — but trade is predictable, lookouts see far, and geography is a funnel. Pirates didn't find ships by luck. They found them by <em>math</em>.</p>
+      <p class="footer-note">Detection formula: d = 1.17 × (√h<sub>observer</sub> + √h<sub>target</sub>) nautical miles. Historical data from maritime records of the Golden Age of Piracy (1680–1730).</p>
+    </footer>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

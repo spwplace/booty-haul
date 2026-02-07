@@ -1,0 +1,479 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #060a12;
+  color: #b0b8c8;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+/* ── Header ────────────────────────────── */
+
+header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(255,215,0,0.06);
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #d4c9a8;
+  line-height: 1.45;
+}
+h1 em {
+  color: #ffd866;
+  font-style: italic;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #5e6a7e;
+}
+
+/* ── Essay sections ───────────────────── */
+
+.essay-section {
+  margin-bottom: 72px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.essay-section:last-of-type {
+  border-bottom: none;
+}
+
+.section-text {
+  margin-bottom: 24px;
+}
+
+.section-text h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #d4c9a8;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.section-num {
+  display: inline-block;
+  color: #ffd866;
+  font-style: italic;
+  margin-right: 8px;
+  font-weight: 400;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.section-text p {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #8a94ae;
+  margin-bottom: 10px;
+  max-width: 720px;
+}
+
+.section-text strong {
+  color: #c0c8d8;
+}
+
+.callout {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-left: 3px solid #ffd866;
+  background: rgba(255,216,102,0.04);
+  color: #d4c9a8 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.6 !important;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── Canvas ────────────────────────────── */
+
+.section-interactive canvas {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(255,215,0,0.08);
+  margin-bottom: 12px;
+}
+
+/* ── Controls ──────────────────────────── */
+
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.controls-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: #5e6a7e;
+}
+
+.control-label {
+  white-space: nowrap;
+}
+
+.control-value {
+  color: #8a94ae;
+  font-variant-numeric: tabular-nums;
+  min-width: 48px;
+}
+
+input[type="range"] {
+  width: 80px;
+  accent-color: #ffd866;
+}
+
+select {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: #8a94ae;
+  font-size: 11px;
+  padding: 3px 6px;
+}
+
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 11px;
+  color: #6a7a94;
+  margin-top: 4px;
+}
+
+.stat {
+  display: flex;
+  gap: 4px;
+}
+.stat-label {
+  color: #4a5568;
+}
+.stat-value {
+  color: #ffd866;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Section 3: Sim ───────────────────── */
+
+#sea {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(255,215,0,0.08);
+}
+
+#sim-ui {
+  margin-top: 14px;
+}
+
+#strategies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.strat-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 5px;
+  background: rgba(255,255,255,0.03);
+  color: #8090a8;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  user-select: none;
+}
+.strat-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: #b0c0d8;
+}
+.strat-btn.active {
+  background: rgba(255,215,0,0.06);
+  border-color: rgba(255,215,0,0.25);
+  color: #ffd866;
+}
+
+.strat-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+#desc {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #6a7a94;
+  margin-bottom: 12px;
+  min-height: 2.4em;
+}
+
+#sim-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+#sim-controls button {
+  padding: 4px 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  background: rgba(255,255,255,0.04);
+  color: #8a94a8;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#sim-controls button:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+#sim-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #5e6a7e;
+}
+
+#clock {
+  font-size: 11px;
+  color: #4a5568;
+  font-variant-numeric: tabular-nums;
+}
+
+#sim-encounters {
+  font-size: 11px;
+  color: #ffd866;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Comparison chart ──────────────────── */
+
+#comparison {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 14px;
+}
+
+#comparison h3 {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #4a5568;
+  margin-bottom: 10px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 56px 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 11px;
+}
+.bar-row.active .bar-label { color: #ffd866; }
+
+.bar-label {
+  color: #6a7a94;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  height: 5px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  min-width: 0;
+}
+
+.bar-value {
+  text-align: right;
+  color: #8090a8;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-total {
+  text-align: right;
+  color: #3e4a5c;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Section 5: Arms Race ─────────────── */
+
+#ar-map {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(255,215,0,0.08);
+  margin-bottom: 10px;
+}
+
+.ar-callout {
+  padding: 10px 14px;
+  border-left: 3px solid #ffd866;
+  background: rgba(255,216,102,0.04);
+  color: #d4c9a8;
+  font-size: 12.5px;
+  line-height: 1.6;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 14px;
+  min-height: 2em;
+}
+
+#ar-strategies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.ar-strat-btn.active {
+  background: rgba(255,215,0,0.06);
+  border-color: rgba(255,215,0,0.25);
+  color: #ffd866;
+}
+
+#ar-sliders {
+  margin-bottom: 10px;
+}
+
+.ar-slider-group {
+  display: none;
+  padding: 4px 0;
+}
+.ar-slider-group.visible {
+  display: block;
+}
+
+.ar-slider-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: #5e6a7e;
+}
+
+#ar-global-controls {
+  margin-bottom: 10px;
+}
+
+.ar-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #5e6a7e;
+  cursor: pointer;
+}
+.ar-checkbox-label input[type="checkbox"] {
+  accent-color: #ffd866;
+}
+
+#ar-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.ar-preset-btn {
+  padding: 5px 11px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 5px;
+  background: rgba(255,255,255,0.03);
+  color: #8090a8;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  user-select: none;
+}
+.ar-preset-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: #b0c0d8;
+}
+.ar-preset-btn.active {
+  background: rgba(255,215,0,0.06);
+  border-color: rgba(255,215,0,0.25);
+  color: #ffd866;
+}
+
+#ar-cost-chart,
+#ar-pop-chart {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(255,215,0,0.08);
+  margin-bottom: 10px;
+}
+
+#ar-stats {
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+/* ── Footer ────────────────────────────── */
+
+footer {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,215,0,0.06);
+}
+
+footer p {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #8a94ae;
+  max-width: 720px;
+}
+
+footer em {
+  color: #ffd866;
+  font-style: italic;
+}
+
+.footer-note {
+  margin-top: 12px;
+  font-size: 0.75rem !important;
+  color: #4a5568 !important;
+}
+
+/* ── Responsive ────────────────────────── */
+
+@media (max-width: 600px) {
+  #app { padding: 14px 10px 32px; }
+  h1 { font-size: 1.15rem; }
+  .section-text h2 { font-size: 1.05rem; }
+  .strat-btn { font-size: 10.5px; padding: 4px 8px; }
+  .bar-row { grid-template-columns: 100px 1fr 48px 30px; font-size: 10px; }
+  .controls-row { gap: 10px; }
+  .essay-section { margin-bottom: 48px; padding-bottom: 32px; }
+}
