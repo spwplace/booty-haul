@@ -5,6 +5,18 @@
 /* ── Reset ────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ── Scroll progress ──────────────────── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #ffd866, #e8a830);
+  z-index: 100;
+  pointer-events: none;
+}
+
 /* ── Base ─────────────────────────────── */
 body {
   background: #060a12;

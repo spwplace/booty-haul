@@ -9,6 +9,17 @@ import { Renderer } from './render';
 import { initProbability, drawProbability, ProbState } from './probability';
 import { initArmsRace, drawArmsRace, ArmsRaceState } from './arms-race';
 
+// ── Scroll progress bar ───────────────────────────────
+
+const progressBar = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const top = document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - window.innerHeight;
+  if (progressBar && height > 0) {
+    progressBar.style.width = ((top / height) * 100).toFixed(1) + '%';
+  }
+}, { passive: true });
+
 // ── Section visibility & scroll reveal ────────────────
 
 document.getElementById('app')!.classList.add('will-animate');
