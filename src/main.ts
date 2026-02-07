@@ -12,12 +12,14 @@ import { initArmsRace, drawArmsRace, ArmsRaceState } from './arms-race';
 // ── Scroll progress bar ───────────────────────────────
 
 const progressBar = document.getElementById('scroll-progress');
+const scrollHint = document.querySelector('.scroll-hint');
 window.addEventListener('scroll', () => {
   const top = document.documentElement.scrollTop;
   const height = document.documentElement.scrollHeight - window.innerHeight;
   if (progressBar && height > 0) {
     progressBar.style.width = ((top / height) * 100).toFixed(1) + '%';
   }
+  if (scrollHint && top > 60) scrollHint.classList.add('hidden');
 }, { passive: true });
 
 // ── Section visibility & scroll reveal ────────────────
