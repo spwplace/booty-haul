@@ -9,7 +9,9 @@ import { Renderer } from './render';
 import { initProbability, drawProbability, ProbState } from './probability';
 import { initArmsRace, drawArmsRace, ArmsRaceState } from './arms-race';
 
-// ── Section visibility ─────────────────────────────────
+// ── Section visibility & scroll reveal ────────────────
+
+document.getElementById('app')!.classList.add('will-animate');
 
 const visible = new Map<string, boolean>();
 
@@ -17,6 +19,7 @@ const observer = new IntersectionObserver(
   (entries) => {
     for (const e of entries) {
       visible.set(e.target.id, e.isIntersecting);
+      if (e.isIntersecting) e.target.classList.add('revealed');
     }
   },
   { threshold: 0.05 }
